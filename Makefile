@@ -9,6 +9,12 @@ base: login
 updatebase: login
 	az acr build --registry ${ACR_NAME} --image golang:alpine --file Dockerfile-base.1-11 .
 
+watch: login
+	./watch.sh
+
+showtasks: login
+	az acr task list-runs --registry ${ACR_NAME} --output table
+	
 base1104: login
 	docker build -f Dockerfile-base.1-10-4 -t ${ACR_NAME}.azurecr.io/golang:1.10.4 .
 	docker push ${ACR_NAME}.azurecr.io/golang:1.10.4
