@@ -1,0 +1,10 @@
+ARG REGISTRY_NAME
+FROM ${REGISTRY_NAME}.azurecr.io/golang:alpine
+
+WORKDIR /go/src/app
+COPY . .
+
+RUN go get -d -v ./...
+RUN go install -v ./...
+EXPOSE 80
+CMD ["app"]
