@@ -1,5 +1,5 @@
 ARG REGISTRY_NAME
-FROM ${REGISTRY_NAME}.azurecr.io/golang:alpine
+FROM ${REGISTRY_NAME}/golang:alpine
 
 WORKDIR /go/src/app
 COPY . .
