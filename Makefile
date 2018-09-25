@@ -14,7 +14,10 @@ watch: login
 
 showtasks: login
 	az acr task list-runs --registry ${ACR_NAME} --output table
-	
+
+deploy: login
+	./deploy.sh
+
 base1104: login
 	docker build -f Dockerfile-base.1-10-4 -t ${ACR_NAME}.azurecr.io/golang:1.10.4 .
 	docker push ${ACR_NAME}.azurecr.io/golang:1.10.4
