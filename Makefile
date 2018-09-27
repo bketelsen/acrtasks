@@ -1,13 +1,15 @@
 ACR_NAME=bkacrdemo
 
+setup:
+	./setup.sh
+	./vault.sh
+	./storesp.sh
+
 login:
-	az acr login --name ${ACR_NAME}
+	@az acr login --name ${ACR_NAME}
 
 base: login
 	az acr build --registry ${ACR_NAME} --image golang:alpine --file Dockerfile-base.1-10-4 .
-
-updatebase: login
-	az acr build --registry ${ACR_NAME} --image golang:alpine --file Dockerfile-base.1-11 .
 
 watch: login
 	./watch.sh
@@ -15,8 +17,19 @@ watch: login
 showtasks: login
 	az acr task list-runs --registry ${ACR_NAME} --output table
 
+list: login
+	@az acr repository list -n ${ACR_NAME} -o table
+	@az acr repository show-tags -n ${ACR_NAME} --repository golang
+	@az acr repository show-tags -n ${ACR_NAME} --repository simpleweb
+
 deploy: login
 	./deploy.sh
+
+updatebase: login
+	az acr build --registry ${ACR_NAME} --image golang:alpine --file Dockerfile-base.1-11 .
+
+cleanup: login
+	./cleanup.sh
 
 base1104: login
 	docker build -f Dockerfile-base.1-10-4 -t ${ACR_NAME}.azurecr.io/golang:1.10.4 .
@@ -40,9 +53,4 @@ build111: login base111
 run111: build111
 	docker run -d -p 8080:80 ${ACR_NAME}.azurecr.io/simpleweb:111
 
-deploy1104: build1104
-	./deploy.sh 1104
-
-deploy111: build111
-	./deploy.sh 111
 
